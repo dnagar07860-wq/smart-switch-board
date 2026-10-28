@@ -1,6 +1,7 @@
 {
   "name": "Smart Switch Board",
   "short_name": "Smart Board",
+  "description": "Smart Switch Board Mobile App - Wi-Fi device control and timers",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#101827",
