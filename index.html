@@ -1,10 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Smart Switch Board</title>
+<!-- PWA Manifest link -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#101827">
 <style>
 body {
   font-family: Arial, sans-serif;
@@ -353,6 +355,17 @@ try {
 } catch (e) {
   // Agar saved settings na milen, setup screen khuli rahegi.
 }
+</script>
+
+<!-- Service Worker Registration Script -->
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("./sw.js")
+        .then((reg) => console.log("Service Worker registered! scope:", reg.scope))
+        .catch((err) => console.log("Service Worker registration failed:", err));
+    });
+  }
 </script>
 </body>
 </html>
