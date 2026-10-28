@@ -1,0 +1,358 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Switch Board</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+  padding: 12px;
+}
+h2, h3 { text-align: center; }
+.card {
+  background: #202d40;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 12px;
+}
+input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 11px;
+  margin: 5px 0 12px;
+  border-radius: 7px;
+  border: none;
+}
+button {
+  padding: 11px;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  margin: 3px;
+}
+.primary { background: #8ab4f8; color: #101827; }
+.on { background: #32d583; color: #102018; }
+.off { background: #ff7777; color: #301010; }
+.cancel { background: #ffd166; color: #302400; }
+.small { color: #c4d0e0; font-size: 13px; }
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.namefield { margin: 8px 0; }
+.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<h2>SMART SWITCH BOARD</h2>
+<p id="message" class="small" style="text-align:center">
+App Simulation — कोई वास्तविक उपकरण कनेक्ट नहीं है
+</p>
+
+<section class="card" id="setup">
+  <h3>अपना बोर्ड सेट करें</h3>
+  <p class="small">हर प्रकार के स्विच की संख्या चुनें। संख्या 0 भी रख सकते हैं।</p>
+
+  <label>लाइट स्विच की संख्या</label>
+  <input id="lightCount" type="number" min="0" max="30" value="6">
+
+  <label>पंखे के स्विच की संख्या</label>
+  <input id="fanCount" type="number" min="0" max="30" value="1">
+
+  <label>5-पिन सॉकेट की संख्या</label>
+  <input id="socketCount" type="number" min="0" max="30" value="3">
+
+  <label>अन्य स्विचों की संख्या</label>
+  <input id="otherCount" type="number" min="0" max="30" value="2">
+
+  <button class="primary" id="makeNames">नाम सेट करें</button>
+  <div id="nameFields"></div>
+  <button class="primary hidden" id="saveSettings">Save Settings</button>
+</section>
+
+<section id="controls" class="hidden">
+  <div class="row">
+    <h3>आपका कंट्रोल पैनल</h3>
+    <button class="primary" id="editSettings">Edit Setup</button>
+  </div>
+  <div id="board"></div>
+</section>
+
+<script>
+const categories = [
+  {key: "light", label: "LIGHT", input: "lightCount"},
+  {key: "fan", label: "FAN", input: "fanCount"},
+  {key: "socket", label: "5-PIN SOCKET", input: "socketCount"},
+  {key: "other", label: "OTHER", input: "otherCount"}
+];
+
+let devices = [];
+let timers = {};
+let endsAt = {};
+let states = {};
+
+const setup = document.getElementById("setup");
+const controls = document.getElementById("controls");
+const nameFields = document.getElementById("nameFields");
+const board = document.getElementById("board");
+
+function getCounts() {
+  const counts = {};
+  for (const cat of categories) {
+    const value = Number(document.getElementById(cat.input).value);
+    if (!Number.isInteger(value) || value < 0 || value > 30) {
+      alert("Har category ki sankhya 0 se 30 tak poori sankhya honi chahiye.");
+      return null;
+    }
+    counts[cat.key] = value;
+  }
+
+  const total = Object.values(counts).reduce((a, b) => a + b, 0);
+  if (total < 1 || total > 60) {
+    alert("Kul kam se kam 1 aur adhiktam 60 controls rakhen.");
+    return null;
+  }
+  return counts;
+}
+
+document.getElementById("makeNames").onclick = () => {
+  const counts = getCounts();
+  if (!counts) return;
+
+  nameFields.innerHTML = "";
+  categories.forEach(cat => {
+    for (let n = 1; n <= counts[cat.key]; n++) {
+      const label = document.createElement("label");
+      label.textContent = cat.label + " " + n + " ka naam";
+      const input = document.createElement("input");
+      input.className = "namefield";
+      input.dataset.key = cat.key;
+      input.dataset.number = n;
+      input.value = cat.label + " " + n;
+      input.maxLength = 40;
+      nameFields.appendChild(label);
+      nameFields.appendChild(input);
+    }
+  });
+
+  document.getElementById("saveSettings").classList.remove("hidden");
+  document.getElementById("message").textContent =
+    "Apne switches ke naam likhen, phir Save Settings dabayen.";
+};
+
+document.getElementById("saveSettings").onclick = () => {
+  const counts = getCounts();
+  if (!counts) return;
+
+  const fields = nameFields.querySelectorAll("input");
+  if (fields.length === 0) {
+    alert("Pehle Naam Set Karen dabayen.");
+    return;
+  }
+
+  const newDevices = [];
+  fields.forEach((field, index) => {
+    const name = field.value.trim() || ("Switch " + (index + 1));
+    newDevices.push({
+      id: field.dataset.key + "_" + field.dataset.number,
+      category: field.dataset.key,
+      categoryLabel: categories.find(c => c.key === field.dataset.key).label,
+      name: name
+    });
+  });
+
+  devices.forEach(d => clearInterval(timers[d.id]));
+  timers = {};
+  endsAt = {};
+  states = {};
+  devices = newDevices;
+
+  devices.forEach(d => states[d.id] = false);
+
+  try {
+    localStorage.setItem("smartBoardConfig", JSON.stringify(devices));
+  } catch (e) {
+    alert("Settings is browser mein save nahi ho sakin.");
+  }
+
+  showControls();
+};
+
+function showControls() {
+  setup.classList.add("hidden");
+  controls.classList.remove("hidden");
+  document.getElementById("message").textContent =
+    devices.length + " controls ready — Simulation Mode";
+  renderBoard();
+}
+
+function renderBoard() {
+  board.innerHTML = "";
+
+  devices.forEach((d, index) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const top = document.createElement("div");
+    top.className = "row";
+
+    const title = document.createElement("strong");
+    title.textContent = (index + 1) + ". " + d.name;
+
+    const status = document.createElement("strong");
+    status.id = "status_" + d.id;
+    status.textContent = states[d.id] ? "ON" : "OFF";
+
+    top.append(title, status);
+    card.appendChild(top);
+
+    const timerText = document.createElement("div");
+    timerText.className = "small";
+    timerText.id = "timer_" + d.id;
+    timerText.textContent = "Timer: Not set";
+    card.appendChild(timerText);
+
+    const minutes = document.createElement("input");
+    minutes.type = "number";
+    minutes.min = "1";
+    minutes.max = "1440";
+    minutes.step = "1";
+    minutes.placeholder = "Timer minutes";
+    minutes.id = "minutes_" + d.id;
+    card.appendChild(minutes);
+
+    const onOff = document.createElement("button");
+    onOff.id = "toggle_" + d.id;
+    onOff.onclick = () => {
+      if (states[d.id]) {
+        switchOff(d.id, "Manually OFF");
+      } else {
+        states[d.id] = true;
+        updateStatus(d.id);
+        document.getElementById("message").textContent =
+          d.name + " ON — simulation";
+      }
+    };
+    card.appendChild(onOff);
+
+    const start = document.createElement("button");
+    start.className = "primary";
+    start.textContent = "Start Timer";
+    start.onclick = () => {
+      const mins = Number(minutes.value);
+      if (!Number.isInteger(mins) || mins < 1 || mins > 1440) {
+        alert("1 se 1440 tak poore minutes likhen.");
+        return;
+      }
+
+      clearInterval(timers[d.id]);
+      states[d.id] = true;
+      endsAt[d.id] = Date.now() + mins * 60000;
+
+      timers[d.id] = setInterval(() => {
+        if (Date.now() >= endsAt[d.id]) {
+          switchOff(d.id, "Timer complete — automatically OFF");
+        } else {
+          updateTimer(d.id);
+        }
+      }, 250);
+
+      updateStatus(d.id);
+      updateTimer(d.id);
+      document.getElementById("message").textContent =
+        d.name + " timer started — simulation";
+    };
+    card.appendChild(start);
+
+    const cancel = document.createElement("button");
+    cancel.className = "cancel";
+    cancel.textContent = "Cancel Timer + OFF";
+    cancel.onclick = () => switchOff(d.id, "Timer cancelled — switch OFF");
+    card.appendChild(cancel);
+
+    board.appendChild(card);
+    updateStatus(d.id);
+  });
+}
+
+function updateStatus(id) {
+  const status = document.getElementById("status_" + id);
+  const button = document.getElementById("toggle_" + id);
+  if (!status || !button) return;
+
+  status.textContent = states[id] ? "ON" : "OFF";
+  button.textContent = states[id] ? "TURN OFF" : "TURN ON";
+  button.className = states[id] ? "off" : "on";
+}
+
+function updateTimer(id) {
+  const el = document.getElementById("timer_" + id);
+  if (!el || !endsAt[id]) return;
+
+  const seconds = Math.max(0, Math.ceil((endsAt[id] - Date.now()) / 1000));
+  el.textContent = "Time remaining: " +
+    String(Math.floor(seconds / 60)).padStart(2, "0") + ":" +
+    String(seconds % 60).padStart(2, "0");
+}
+
+function switchOff(id, message) {
+  clearInterval(timers[id]);
+  timers[id] = null;
+  endsAt[id] = 0;
+  states[id] = false;
+  updateStatus(id);
+
+  const timerText = document.getElementById("timer_" + id);
+  if (timerText) timerText.textContent = message;
+
+  const device = devices.find(d => d.id === id);
+  document.getElementById("message").textContent =
+    (device ? device.name : id) + ": " + message + " (simulation)";
+}
+
+document.getElementById("editSettings").onclick = () => {
+  setup.classList.remove("hidden");
+  controls.classList.add("hidden");
+
+  categories.forEach(cat => {
+    document.getElementById(cat.input).value =
+      devices.filter(d => d.category === cat.key).length;
+  });
+
+  document.getElementById("makeNames").click();
+
+  const fields = nameFields.querySelectorAll("input");
+  devices.forEach((d, i) => {
+    if (fields[i]) fields[i].value = d.name;
+  });
+};
+
+try {
+  const saved = JSON.parse(localStorage.getItem("smartBoardConfig") || "null");
+  if (Array.isArray(saved) && saved.length > 0 &&
+      saved.length <= 60 &&
+      saved.every(d => d && typeof d.id === "string" &&
+        typeof d.name === "string" &&
+        categories.some(c => c.key === d.category))) {
+    devices = saved;
+    devices.forEach(d => states[d.id] = false);
+    categories.forEach(cat => {
+      document.getElementById(cat.input).value =
+        devices.filter(d => d.category === cat.key).length;
+    });
+    showControls();
+  }
+} catch (e) {
+  // Agar saved settings na milen, setup screen khuli rahegi.
+}
+</script>
+</body>
+</html>
