@@ -1,258 +1,467 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Switch Board</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#101827">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
-            background-color: #101827;
-            color: #f3f4f6;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background: #1f2937;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        h1 {
-            text-align: center;
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #60a5fa;
-        }
-        .switch-card {
-            background: #374151;
-            padding: 15px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .switch-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .switch-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #4b5563;
-            transition: .4s;
-            border-radius: 26px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #3b82f6;
-        }
-        input:checked + .slider:before {
-            transform: translateX(24px);
-        }
-        .timer-section {
-            display: flex;
-            gap: 8px;
-            margin-top: 5px;
-        }
-        select, button {
-            padding: 8px;
-            border-radius: 6px;
-            border: none;
-            outline: none;
-            font-size: 14px;
-        }
-        select {
-            flex: 1;
-            background: #4b5563;
-            color: white;
-        }
-        button {
-            background: #2563eb;
-            color: white;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        button:active {
-            background: #1d4ed8;
-        }
-        .timer-display {
-            font-size: 14px;
-            color: #fbbf24;
-            margin-top: 4px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Switch Board</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+  padding: 12px;
+}
+h2, h3 { text-align: center; }
+.card {
+  background: #202d40;
+  padding: 14px;
+  margin: 12px 0;
+  border-radius: 12px;
+}
+input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 11px;
+  margin: 5px 0 12px;
+  border-radius: 7px;
+  border: none;
+}
+button {
+  padding: 11px;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  margin: 3px;
+}
+.primary { background: #8ab4f8; color: #101827; }
+.on { background: #32d583; color: #102018; }
+.off { background: #ff7777; color: #301010; }
+.cancel { background: #ffd166; color: #302400; }
+.small { color: #c4d0e0; font-size: 13px; }
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.namefield { margin: 8px 0; }
+.hidden { display: none; }
+</style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Smart Switch Board</h1>
+<h2>SMART SWITCH BOARD</h2>
+<p id="message" class="small" style="text-align:center">
+App Simulation — कोई वास्तविक उपकरण कनेक्ट नहीं है
+</p>
 
-        <!-- Switch 1 -->
-        <div class="switch-card">
-            <div class="switch-header">
-                <span class="switch-title">Living Room Light</span>
-                <label class="switch">
-                    <input type="checkbox" id="switch1" onclick="toggleSwitch(1)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="timer-section">
-                <select id="time1">
-                    <option value="1">1 Minute</option>
-                    <option value="15">15 Minutes</option>
-                    <option value="30">30 Minutes</option>
-                    <option value="60">60 Minutes</option>
-                </select>
-                <button onclick="startTimer(1)">Set Timer</button>
-                <button onclick="cancelTimer(1)" style="background: #dc2626;">Cancel</button>
-            </div>
-            <div class="timer-display" id="display1">Timer: Off</div>
-        </div>
+<section class="card" id="setup">
+  <h3>अपना बोर्ड सेट करें</h3>
+  <p class="small">हर प्रकार के स्विच की संख्या चुनें। संख्या 0 भी रख सकते हैं।</p>
 
-        <!-- Switch 2 -->
-        <div class="switch-card">
-            <div class="switch-header">
-                <span class="switch-title">Bedroom Fan</span>
-                <label class="switch">
-                    <input type="checkbox" id="switch2" onclick="toggleSwitch(2)">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div class="timer-section">
-                <select id="time2">
-                    <option value="1">1 Minute</option>
-                    <option value="15">15 Minutes</option>
-                    <option value="30">30 Minutes</option>
-                    <option value="60">60 Minutes</option>
-                </select>
-                <button onclick="startTimer(2)">Set Timer</button>
-                <button onclick="cancelTimer(2)" style="background: #dc2626;">Cancel</button>
-            </div>
-            <div class="timer-display" id="display2">Timer: Off</div>
-        </div>
-    </div>
+  <label>लाइट स्विच की संख्या</label>
+  <input id="lightCount" type="number" min="0" max="30" value="6">
 
-    <script>
-        // Page load hone par aur visibility change hone par state restore hogi
-        window.onload = function() {
-            initApp();
-        };
+  <label>पंखे के स्विच की संख्या</label>
+  <input id="fanCount" type="number" min="0" max="30" value="1">
 
-        // Jab bhi user app ko background se wapas foreground mein layega, yeh turant check karega
-        document.addEventListener("visibilitychange", function() {
-            if (document.visibilityState === "visible") {
-                initApp();
-            }
-        });
+  <label>5-पिन सॉकेट की संख्या</label>
+  <input id="socketCount" type="number" min="0" max="30" value="3">
 
-        function initApp() {
-            checkTimer(1);
-            checkTimer(2);
-        }
+  <label>अन्य स्विचों की संख्या</label>
+  <input id="otherCount" type="number" min="0" max="30" value="2">
 
-        // Har 1 second mein timers update honge
-        setInterval(() => {
-            checkTimer(1);
-            checkTimer(2);
-        }, 1000);
+  <button class="primary" id="makeNames">नाम सेट करें</button>
+  <div id="nameFields"></div>
+  <button class="primary hidden" id="saveSettings">Save Settings</button>
+</section>
 
-        function toggleSwitch(id) {
-            const isChecked = document.getElementById('switch' + id).checked;
-            localStorage.setItem('switch_' + id, isChecked);
-        }
+<section id="controls" class="hidden">
+  <div class="row">
+    <h3>आपका कंट्रोल पैनल</h3>
+    <button class="primary" id="editSettings">Edit Setup</button>
+  </div>
+  <div id="board"></div>
+</section>
 
-        function startTimer(id) {
-            const minutes = parseInt(document.getElementById('time' + id).value);
-            const endTime = Date.now() + (minutes * 60 * 1000); // Exact future target time
-            
-            localStorage.setItem('endTime_' + id, endTime);
-            localStorage.setItem('switch_' + id, 'true');
-            document.getElementById('switch' + id).checked = true;
-        }
+<script>
+const categories = [
+  {key:"light",label:"LIGHT",input:"lightCount"},
+  {key:"fan",label:"FAN",input:"fanCount"},
+  {key:"socket",label:"5-PIN SOCKET",input:"socketCount"},
+  {key:"other",label:"OTHER",input:"otherCount"}
+];
 
-        function cancelTimer(id) {
-            localStorage.removeItem('endTime_' + id);
-            localStorage.setItem('switch_' + id, 'false');
-            document.getElementById('switch' + id).checked = false;
-            document.getElementById('display' + id).innerText = "Timer: Off";
-        }
+const CONFIG_KEY = "smartBoardConfig";
+const RUNTIME_KEY = "smartBoardRuntime";
 
-        function checkTimer(id) {
-            const endTime = localStorage.getItem('endTime_' + id);
-            
-            if (!endTime) {
-                const switchState = localStorage.getItem('switch_' + id);
-                if (switchState === 'true') {
-                    document.getElementById('switch' + id).checked = true;
-                } else {
-                    document.getElementById('switch' + id).checked = false;
-                    document.getElementById('display' + id).innerText = "Timer: Off";
-                }
-                return;
-            }
+let devices = [];
+let timers = {};
+let endsAt = {};
+let states = {};
+let messages = {};
 
-            const remainingTime = parseInt(endTime) - Date.now();
+const setup = document.getElementById("setup");
+const controls = document.getElementById("controls");
+const nameFields = document.getElementById("nameFields");
+const board = document.getElementById("board");
 
-            if (remainingTime <= 0) {
-                cancelTimer(id);
-            } else {
-                const totalSecs = Math.floor(remainingTime / 1000);
-                const mins = Math.floor(totalSecs / 60);
-                const secs = totalSecs % 60;
-                document.getElementById('display' + id).innerText = `Remaining: ${mins}m ${secs}s`;
-                
-                document.getElementById('switch' + id).checked = true;
-                localStorage.setItem('switch_' + id, 'true');
-            }
-        }
+function saveRuntime() {
+  try {
+    localStorage.setItem(RUNTIME_KEY, JSON.stringify({
+      states: states,
+      endsAt: endsAt,
+      messages: messages
+    }));
+  } catch (e) {
+    console.warn("Runtime save failed", e);
+  }
+}
 
-        // Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('Service Worker Registered'))
-                .catch((err) => console.log('Service Worker Failed', err));
-        }
-    </script>
+function restoreRuntime() {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(RUNTIME_KEY) || "null"
+    );
+
+    if (!saved || typeof saved !== "object") return;
+
+    devices.forEach(d => {
+      states[d.id] = !!(saved.states && saved.states[d.id]);
+
+      const end = Number(saved.endsAt && saved.endsAt[d.id]);
+      endsAt[d.id] = Number.isFinite(end) && end > 0 ? end : 0;
+
+      messages[d.id] =
+        saved.messages && typeof saved.messages[d.id] === "string"
+          ? saved.messages[d.id]
+          : "";
+    });
+  } catch (e) {
+    states = {};
+    endsAt = {};
+    messages = {};
+  }
+}
+
+function getCounts() {
+  const counts = {};
+
+  for (const cat of categories) {
+    const value = Number(document.getElementById(cat.input).value);
+
+    if (!Number.isInteger(value) || value < 0 || value > 30) {
+      alert("हर श्रेणी की संख्या 0 से 30 तक रखें।");
+      return null;
+    }
+    counts[cat.key] = value;
+  }
+
+  const total = Object.values(counts).reduce((a,b) => a+b, 0);
+
+  if (total < 1 || total > 60) {
+    alert("कुल कम से कम 1 और अधिकतम 60 कंट्रोल रखें।");
+    return null;
+  }
+
+  return counts;
+}
+
+document.getElementById("makeNames").onclick = () => {
+  const counts = getCounts();
+  if (!counts) return;
+
+  nameFields.innerHTML = "";
+
+  categories.forEach(cat => {
+    for (let n = 1; n <= counts[cat.key]; n++) {
+      const label = document.createElement("label");
+      label.textContent = cat.label + " " + n + " का नाम";
+
+      const input = document.createElement("input");
+      input.className = "namefield";
+      input.dataset.key = cat.key;
+      input.dataset.number = n;
+      input.value = cat.label + " " + n;
+      input.maxLength = 40;
+
+      nameFields.append(label, input);
+    }
+  });
+
+  document.getElementById("saveSettings").classList.remove("hidden");
+  document.getElementById("message").textContent =
+    "नाम लिखें और Save Settings दबाएँ।";
+};
+
+document.getElementById("saveSettings").onclick = () => {
+  const counts = getCounts();
+  if (!counts) return;
+
+  const fields = nameFields.querySelectorAll("input");
+
+  if (!fields.length) {
+    alert("पहले नाम सेट करें।");
+    return;
+  }
+
+  const newDevices = [];
+
+  fields.forEach((field, index) => {
+    newDevices.push({
+      id: field.dataset.key + "_" + field.dataset.number,
+      category: field.dataset.key,
+      categoryLabel:
+        categories.find(c => c.key === field.dataset.key).label,
+      name: field.value.trim() || ("Switch " + (index + 1))
+    });
+  });
+
+  Object.values(timers).forEach(t => clearInterval(t));
+  timers = {};
+  endsAt = {};
+  states = {};
+  messages = {};
+  devices = newDevices;
+
+  devices.forEach(d => {
+    states[d.id] = false;
+    endsAt[d.id] = 0;
+    messages[d.id] = "";
+  });
+
+  try {
+    localStorage.setItem(CONFIG_KEY, JSON.stringify(devices));
+    saveRuntime();
+  } catch (e) {
+    alert("सेटिंग सेव नहीं हो सकीं।");
+  }
+
+  showControls();
+};
+
+function showControls() {
+  setup.classList.add("hidden");
+  controls.classList.remove("hidden");
+
+  document.getElementById("message").textContent =
+    devices.length + " controls ready — Simulation Mode";
+
+  renderBoard();
+}
+
+function renderBoard() {
+  board.innerHTML = "";
+
+  devices.forEach((d, index) => {
+    const card = document.createElement("div");
+    card.className = "card";
+
+    const top = document.createElement("div");
+    top.className = "row";
+
+    const title = document.createElement("strong");
+    title.textContent = (index + 1) + ". " + d.name;
+
+    const status = document.createElement("strong");
+    status.id = "status_" + d.id;
+
+    top.append(title, status);
+    card.appendChild(top);
+
+    const timerText = document.createElement("div");
+    timerText.className = "small";
+    timerText.id = "timer_" + d.id;
+    card.appendChild(timerText);
+
+    const minutes = document.createElement("input");
+    minutes.type = "number";
+    minutes.min = "1";
+    minutes.max = "1440";
+    minutes.step = "1";
+    minutes.placeholder = "Timer minutes";
+    minutes.id = "minutes_" + d.id;
+    card.appendChild(minutes);
+
+    const onOff = document.createElement("button");
+    onOff.id = "toggle_" + d.id;
+
+    onOff.onclick = () => {
+      if (states[d.id]) {
+        switchOff(d.id, "Manually OFF");
+      } else {
+        states[d.id] = true;
+        messages[d.id] = "Switch ON — no timer";
+        saveRuntime();
+        updateStatus(d.id);
+        updateTimer(d.id);
+        document.getElementById("message").textContent =
+          d.name + " ON — simulation";
+      }
+    };
+
+    card.appendChild(onOff);
+
+    const start = document.createElement("button");
+    start.className = "primary";
+    start.textContent = "Start Timer";
+
+    start.onclick = () => {
+      const mins = Number(minutes.value);
+
+      if (!Number.isInteger(mins) || mins < 1 || mins > 1440) {
+        alert("1 से 1440 तक पूरे मिनट लिखें।");
+        return;
+      }
+
+      clearInterval(timers[d.id]);
+
+      states[d.id] = true;
+      endsAt[d.id] = Date.now() + mins * 60000;
+      messages[d.id] = "";
+
+      saveRuntime();
+      updateStatus(d.id);
+      updateTimer(d.id);
+      runTimer(d.id);
+
+      document.getElementById("message").textContent =
+        d.name + " timer started — simulation";
+    };
+
+    card.appendChild(start);
+
+    const cancel = document.createElement("button");
+    cancel.className = "cancel";
+    cancel.textContent = "Cancel Timer + OFF";
+    cancel.onclick = () =>
+      switchOff(d.id, "Timer cancelled — switch OFF");
+
+    card.appendChild(cancel);
+    board.appendChild(card);
+
+    updateStatus(d.id);
+    updateTimer(d.id);
+
+    if (endsAt[d.id] > 0 && endsAt[d.id] <= Date.now()) {
+      switchOff(d.id, "Timer complete — automatically OFF");
+    } else if (endsAt[d.id] > Date.now()) {
+      runTimer(d.id);
+    } else {
+      timerText.textContent = messages[d.id] || "Timer: Not set";
+    }
+  });
+}
+
+function runTimer(id) {
+  clearInterval(timers[id]);
+
+  timers[id] = setInterval(() => {
+    if (!endsAt[id]) {
+      clearInterval(timers[id]);
+      timers[id] = null;
+      return;
+    }
+
+    if (Date.now() >= endsAt[id]) {
+      switchOff(id, "Timer complete — automatically OFF");
+    } else {
+      updateTimer(id);
+    }
+  }, 500);
+}
+
+function updateStatus(id) {
+  const status = document.getElementById("status_" + id);
+  const button = document.getElementById("toggle_" + id);
+
+  if (!status || !button) return;
+
+  status.textContent = states[id] ? "ON" : "OFF";
+  button.textContent = states[id] ? "TURN OFF" : "TURN ON";
+  button.className = states[id] ? "off" : "on";
+}
+
+function updateTimer(id) {
+  const el = document.getElementById("timer_" + id);
+  if (!el) return;
+
+  if (endsAt[id] > 0) {
+    const seconds = Math.max(
+      0, Math.ceil((endsAt[id] - Date.now()) / 1000)
+    );
+
+    el.textContent = "Time remaining: " +
+      String(Math.floor(seconds / 60)).padStart(2, "0") + ":" +
+      String(seconds % 60).padStart(2, "0");
+  } else {
+    el.textContent = messages[id] || "Timer: Not set";
+  }
+}
+
+function switchOff(id, message) {
+  clearInterval(timers[id]);
+  timers[id] = null;
+  endsAt[id] = 0;
+  states[id] = false;
+  messages[id] = message;
+
+  saveRuntime();
+  updateStatus(id);
+  updateTimer(id);
+
+  const device = devices.find(d => d.id === id);
+
+  document.getElementById("message").textContent =
+    (device ? device.name : id) + ": " + message + " (simulation)";
+}
+
+document.getElementById("editSettings").onclick = () => {
+  setup.classList.remove("hidden");
+  controls.classList.add("hidden");
+
+  categories.forEach(cat => {
+    document.getElementById(cat.input).value =
+      devices.filter(d => d.category === cat.key).length;
+  });
+
+  document.getElementById("makeNames").click();
+
+  const fields = nameFields.querySelectorAll("input");
+
+  devices.forEach(d => {
+    const field = Array.from(fields).find(
+      f => f.dataset.key === d.category &&
+           f.dataset.number === d.id.split("_").pop()
+    );
+    if (field) field.value = d.name;
+  });
+};
+
+try {
+  const saved = JSON.parse(localStorage.getItem(CONFIG_KEY) || "null");
+
+  if (Array.isArray(saved) && saved.length > 0 && saved.length <= 60 &&
+      saved.every(d => d &&
+        typeof d.id === "string" &&
+        typeof d.name === "string" &&
+        categories.some(c => c.key === d.category))) {
+
+    devices = saved;
+    restoreRuntime();
+
+    categories.forEach(cat => {
+      document.getElementById(cat.input).value =
+        devices.filter(d => d.category === cat.key).length;
+    });
+
+    showControls();
+  }
+} catch (e) {
+  // सेटिंग पढ़ने में समस्या हो तो सेटअप स्क्रीन खुली रहेगी।
+}
+</script>
 </body>
 </html>
