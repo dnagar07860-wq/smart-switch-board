@@ -54,7 +54,6 @@
             font-size: 18px;
             font-weight: 600;
         }
-        /* Toggle Switch Styling */
         .switch {
             position: relative;
             display: inline-block;
@@ -175,17 +174,28 @@
     </div>
 
     <script>
-        // Page load hone par state aur timers ko restore karne ke liye
+        // Page load hone par aur visibility change hone par state restore hogi
         window.onload = function() {
-            restoreState(1);
-            restoreState(2);
-            
-            // Har 1 second mein timers ko check karne ke liye taaki background se aane par bhi sahi time dikhe
-            setInterval(() => {
-                checkTimer(1);
-                checkTimer(2);
-            }, 1000);
+            initApp();
         };
+
+        // Jab bhi user app ko background se wapas foreground mein layega, yeh turant check karega
+        document.addEventListener("visibilitychange", function() {
+            if (document.visibilityState === "visible") {
+                initApp();
+            }
+        });
+
+        function initApp() {
+            checkTimer(1);
+            checkTimer(2);
+        }
+
+        // Har 1 second mein timers update honge
+        setInterval(() => {
+            checkTimer(1);
+            checkTimer(2);
+        }, 1000);
 
         function toggleSwitch(id) {
             const isChecked = document.getElementById('switch' + id).checked;
@@ -194,9 +204,8 @@
 
         function startTimer(id) {
             const minutes = parseInt(document.getElementById('time' + id).value);
-            const endTime = Date.now() + (minutes * 60 * 1000); // Future target timestamp calculate hoga
+            const endTime = Date.now() + (minutes * 60 * 1000); // Exact future target time
             
-            // State localStorage mein save kar do
             localStorage.setItem('endTime_' + id, endTime);
             localStorage.setItem('switch_' + id, 'true');
             document.getElementById('switch' + id).checked = true;
@@ -211,44 +220,37 @@
 
         function checkTimer(id) {
             const endTime = localStorage.getItem('endTime_' + id);
-            if (!endTime) return;
+            
+            if (!endTime) {
+                const switchState = localStorage.getItem('switch_' + id);
+                if (switchState === 'true') {
+                    document.getElementById('switch' + id).checked = true;
+                } else {
+                    document.getElementById('switch' + id).checked = false;
+                    document.getElementById('display' + id).innerText = "Timer: Off";
+                }
+                return;
+            }
 
-            const remainingTime = endTime - Date.now();
+            const remainingTime = parseInt(endTime) - Date.now();
 
             if (remainingTime <= 0) {
-                // Time khatam hone par switch band kar do
                 cancelTimer(id);
             } else {
-                // Minutes aur Seconds calculate karna
                 const totalSecs = Math.floor(remainingTime / 1000);
                 const mins = Math.floor(totalSecs / 60);
                 const secs = totalSecs % 60;
                 document.getElementById('display' + id).innerText = `Remaining: ${mins}m ${secs}s`;
                 
-                // Switch on rakho
                 document.getElementById('switch' + id).checked = true;
                 localStorage.setItem('switch_' + id, 'true');
             }
         }
 
-        function restoreState(id) {
-            // Switch ki purani position wapas laana
-            const switchState = localStorage.getItem('switch_' + id);
-            if (switchState === 'true') {
-                document.getElementById('switch' + id).checked = true;
-            } else {
-                document.getElementById('switch' + id).checked = false;
-                document.getElementById('display' + id).innerText = "Timer: Off";
-            }
-
-            // Agar pehle se timer chal raha ho toh usko turant check karna
-            checkTimer(id);
-        }
-
-        // Service worker register karna taaki PWA offline aur properly chale
+        // Service Worker Registration
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
-                .then(() => console.log('Service Worker Registered Successfully'))
+                .then(() => console.log('Service Worker Registered'))
                 .catch((err) => console.log('Service Worker Failed', err));
         }
     </script>
