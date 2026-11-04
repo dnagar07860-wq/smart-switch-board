@@ -35,6 +35,22 @@
       ]
     }
   ],
+  "screenshots": [
+    {
+      "src": "./icons/screenshot-mobile.png",
+      "sizes": "540x1130",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Smart Switch Board Mobile View"
+    },
+    {
+      "src": "./icons/screenshot-desktop.png",
+      "sizes": "1280x800",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Smart Switch Board Desktop View"
+    }
+  ],
   "icons": [
     {
       "src": "./icons/icon-192.png",
