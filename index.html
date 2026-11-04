@@ -315,5 +315,202 @@ function renderBoard(){
 
  saveRuntime();
  $("savedLabel").textContent=t("saved");
-}function updateDevice(id){
- const on=
+   }function updateDevice(id){
+ const on=!!runtime.states[id];
+ const state=$("state-"+id);
+ const toggle=$("toggle-"+id);
+
+ if(!state||!toggle)return;
+
+ state.textContent=on?"ON":"OFF";
+ state.classList.toggle("on",on);
+ toggle.textContent=on?t("off"):t("on");
+ toggle.classList.toggle("on",on);
+
+ const end=Number(runtime.endsAt[id]||0);
+ const txt=$("timer-"+id);
+
+ if(end>Date.now()){
+  const s=Math.max(0,Math.ceil((end-Date.now())/1000));
+  txt.textContent=`${t("autoOff")} ${Math.floor(s/60)}m ${s%60}s`;
+ }else{
+  txt.textContent=runtime.messages[id]||t("noTimer");
+ }
+}
+
+function toggleDevice(id){
+ if(runtime.states[id]){
+  switchOff(id,t("manualOff"));
+ }else{
+  runtime.states[id]=true;
+  runtime.endsAt[id]=0;
+  runtime.messages[id]=t("manualOn");
+  saveRuntime();
+  updateDevice(id);
+ }
+}
+
+function startInterval(id){
+ clearInterval(intervals[id]);
+
+ intervals[id]=setInterval(()=>{
+  const end=Number(runtime.endsAt[id]||0);
+
+  if(end&&Date.now()>=end){
+   switchOff(id,t("timerFinished"));
+  }else{
+   updateDevice(id);
+  }
+ },500);
+
+ updateDevice(id);
+}
+
+function startTimer(id,mins){
+ if(!Number.isFinite(mins)||mins<=0||mins>10080){
+  toast(t("validTimer"));
+  return;
+ }
+
+ runtime.states[id]=true;
+ runtime.endsAt[id]=Date.now()+mins*60000;
+ runtime.messages[id]="";
+
+ saveRuntime();
+ startInterval(id);
+ updateDevice(id);
+ toast(t("timerStarted"));
+}
+
+function switchOff(id,message){
+ clearInterval(intervals[id]);
+ delete intervals[id];
+
+ runtime.states[id]=false;
+ runtime.endsAt[id]=0;
+ runtime.messages[id]=message||t("manualOff");
+
+ saveRuntime();
+ updateDevice(id);
+}
+
+function setTimerPrompt(id){
+ const d=devices.find(x=>x.id===id);
+ if(!d)return;
+
+ const value=prompt(
+  `${t("timerPrompt")} ${d.name}\n${t("enterMinutes")}`,
+  "45"
+ );
+
+ if(value===null)return;
+
+ const mins=Number(value);
+
+ if(!Number.isFinite(mins)||mins<=0){
+  toast(t("validMinutes"));
+  return;
+ }
+
+ startTimer(id,mins);
+}
+
+function quickTimer(type,mins){
+ const d=devices.find(x=>x.type===type);
+
+ if(!d){
+  toast(t("noMatching"));
+  return;
+ }
+
+ startTimer(d.id,mins);
+ toast(`${d.name}: ${mins} ${t("timerStartedFor")}`);
+}
+
+function loadConfig(){
+ let saved=null;
+
+ try{
+  saved=
+   JSON.parse(localStorage.getItem(CONFIG_KEY)||"null")||
+   JSON.parse(localStorage.getItem("smartBoardConfig")||"null");
+ }catch(e){}
+
+ if(Array.isArray(saved)&&saved.length){
+  devices=saved.map(d=>({
+   id:String(d.id),
+   type:d.type||"other",
+   name:String(d.name||"Device"),
+   icon:d.icon||categories.find(c=>c.key===d.type)?.icon||"⚡"
+  }));
+ }else{
+  devices=[];
+  $("setupPanel").classList.remove("hidden");
+  buildNameFields([]);
+  return;
+ }
+
+ const fixed={
+  states:{},
+  endsAt:{},
+  messages:{}
+ };
+
+ devices.forEach(d=>{
+  fixed.states[d.id]=!!runtime.states[d.id];
+  fixed.endsAt[d.id]=Number(runtime.endsAt[d.id]||0);
+  fixed.messages[d.id]=runtime.messages[d.id]||"";
+ });
+
+ runtime=fixed;
+ renderBoard();
+}
+
+$("languageSelect").addEventListener("change",e=>{
+ currentLang=e.target.value==="hi"?"hi":"en";
+ localStorage.setItem(LANG_KEY,currentLang);
+ applyLanguage();
+
+ if(!$("setupPanel").classList.contains("hidden")){
+  buildNameFields(devices);
+ }
+});
+
+$("editSetup").onclick=openSetup;
+$("saveSetup").onclick=saveSetup;
+
+$("cancelSetup").onclick=()=>{
+ $("setupPanel").classList.add("hidden");
+};
+
+categories.forEach(c=>{
+ $(c.countId).addEventListener("input",()=>{
+  buildNameFields(devices);
+ });
+});
+
+$("allOff").onclick=()=>{
+ devices.forEach(d=>{
+  switchOff(d.id,t("allOffMsg"));
+ });
+ toast(t("allOffMsg"));
+};
+
+$("quickCharger").onclick=()=>quickTimer("other",45);
+$("quickFan").onclick=()=>quickTimer("fan",120);
+$("quickLight").onclick=()=>quickTimer("light",120);
+
+loadRuntime();
+applyLanguage();
+loadConfig();
+
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>{
+  navigator.serviceWorker.register("./sw.js").catch(err=>{
+   console.warn("Service worker registration failed",err);
+  });
+ });
+}
+</script>
+</body>
+</html>
