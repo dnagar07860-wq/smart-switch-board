@@ -9,6 +9,25 @@
   "orientation": "portrait",
   "background_color": "#08111f",
   "theme_color": "#0b1220",
+  "categories": [
+    "utilities",
+    "productivity",
+    "tools"
+  ],
+  "shortcuts": [
+    {
+      "name": "Smart Switch Board",
+      "short_name": "Switch Board",
+      "description": "Open your smart switch board control panel",
+      "url": "./",
+      "icons": [
+        {
+          "src": "./icons/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
   "icons": [
     {
       "src": "./icons/icon-192.png",
