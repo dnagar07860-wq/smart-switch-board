@@ -6,9 +6,14 @@
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone"
+  ],
   "orientation": "portrait",
   "background_color": "#08111f",
   "theme_color": "#0b1220",
+  "iarc_rating_id": "urn:iarc:other",
   "categories": [
     "utilities",
     "productivity",
