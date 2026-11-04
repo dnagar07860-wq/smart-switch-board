@@ -81,7 +81,8 @@ function applyLanguage(){
  $("quickLight").textContent=currentLang==="hi"?"लाइट · 120 मिनट":"Light · 120 min";
  if(devices.length)renderBoard();else updateEmptyText();
 }
-function updateEmptyText(){$("emptyState").innerHTML=currentLang==="hi"?'अभी कोई उपकरण सेट नहीं है। शुरू करने के लिए <b>सेटिंग बदलें</b> दबाएँ.':'No devices configured yet. Tap <b>Edit setup</b> to get started.'}const categories=[
+function updateEmptyText(){$("emptyState").innerHTML=currentLang==="hi"?'अभी कोई उपकरण सेट नहीं है। शुरू करने के लिए <b>सेटिंग बदलें</b> दबाएँ.':'No devices configured yet. Tap <b>Edit setup</b> to get started.'}
+  const categories=[
  {key:"light",label:"Light",plural:"Lights",icon:"💡",countId:"lightCount"},
  {key:"fan",label:"Fan",plural:"Fans",icon:"🌀",countId:"fanCount"},
  {key:"socket",label:"5-pin socket",plural:"Sockets",icon:"🔌",countId:"socketCount"},
@@ -315,7 +316,8 @@ function renderBoard(){
 
  saveRuntime();
  $("savedLabel").textContent=t("saved");
-   }function updateDevice(id){
+}
+function updateDevice(id){
  const on=!!runtime.states[id];
  const state=$("state-"+id);
  const toggle=$("toggle-"+id);
