@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="hi" dir="ltr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
@@ -7,310 +7,313 @@
 <meta name="description" content="Smart Switch Board: configurable switch controls and timers. Demo interface only.">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
-<title id="page-title">Smart Switch Board</title>
+<title>Smart Switch Board</title>
 <style>
 :root{color-scheme:dark;--bg:#08111f;--panel:#101d30;--panel2:#14243a;--line:#263a53;--text:#eef6ff;--muted:#9db0c7;--cyan:#20d5d0;--blue:#5b8cff;--off:#70839a;--danger:#ff7187}
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#122a46 0,#08111f 52%,#070d17 100%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
 button,input,select{font:inherit}button{cursor:pointer;border:0}.wrap{width:min(100%,980px);margin:auto;padding:20px 15px 42px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:13px;margin:8px 0 22px}.logo-area{display:flex;align-items:center;gap:13px}.logo{width:58px;height:58px;border-radius:17px;box-shadow:0 7px 24px #00cdd533}.top h1{font-size:clamp(21px,5vw,30px);margin:0;letter-spacing:-.5px}.top p{margin:4px 0 0;color:var(--muted);font-size:13px}
-.lang-btn{background:#1e293b;color:var(--cyan);border:1px solid var(--cyan);padding:8px 14px;border-radius:20px;font-weight:700;cursor:pointer;font-size:0.85rem;transition:.15s}
-.lang-btn:active{transform:scale(0.95);background:var(--cyan);color:#08111f}
+.top{display:flex;align-items:center;gap:13px;margin:8px 0 22px}.logo{width:58px;height:58px;border-radius:17px;box-shadow:0 7px 24px #00cdd533}.top h1{font-size:clamp(21px,5vw,30px);margin:0;letter-spacing:-.5px}.top p{margin:4px 0 0;color:var(--muted);font-size:13px}
+.languageBox{margin-left:auto;min-width:112px}.languageBox label{display:block;font-size:11px;color:var(--muted);margin-bottom:5px}.languageBox select{width:100%;padding:9px 10px;border-radius:10px;border:1px solid #344b65;background:#091523;color:var(--text)}
 .hero{padding:20px;border:1px solid #2c4966;background:linear-gradient(130deg,#152d48dd,#0e1b2ddd);border-radius:24px;box-shadow:0 18px 45px #0003;margin-bottom:16px}.heroLine{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.eyebrow{color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase}.hero h2{font-size:25px;margin:7px 0}.hero p{color:var(--muted);margin:0;line-height:1.5;font-size:14px}.pill{display:inline-flex;align-items:center;gap:7px;padding:8px 11px;border-radius:99px;background:#20354d;color:#b9d5ed;font-size:12px;font-weight:700}.dot{width:7px;height:7px;border-radius:50%;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
 .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}.btn{padding:11px 15px;border-radius:12px;font-weight:750;font-size:13px;transition:.15s}.primary{background:linear-gradient(135deg,#23d5d0,#6b9dff);color:#071321}.secondary{background:#1a2d44;color:var(--text);border:1px solid #344b65}.ghost{background:transparent;color:#a8bed6;border:1px solid #344b65}.sectionHead{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:24px 2px 12px}.sectionHead h3{margin:0;font-size:18px}.sectionHead p{margin:4px 0 0;color:var(--muted);font-size:12px}.count{font-size:12px;color:#b8cce0;background:#13243a;padding:7px 10px;border-radius:10px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:12px}.device{padding:16px;border-radius:19px;background:linear-gradient(145deg,#13243a,#0f1b2b);border:1px solid var(--line);box-shadow:0 8px 24px #0002;min-width:0}.deviceTop{display:flex;align-items:center;gap:11px}.deviceIcon{width:44px;height:44px;display:grid;place-items:center;background:#1b354e;border-radius:14px;font-size:22px}.deviceName{font-weight:800;overflow-wrap:anywhere}.deviceType{font-size:11px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.8px}.state{margin-left:auto;font-size:11px;font-weight:800;color:#94a9c0}.state.on{color:var(--cyan)}.deviceBottom{display:flex;gap:8px;margin-top:16px}.toggle{flex:1;padding:11px 10px;border-radius:11px;background:#20354d;color:#e8f2ff;font-weight:800;font-size:13px;border:1px solid #354f69}.toggle.on{background:#123e42;color:#5ff1df;border-color:#1d7777}.timerBtn{padding:11px 12px;border-radius:11px;background:#1d2b41;color:#b9d2ef;font-size:13px;font-weight:750;border:1px solid #35465d}.timerText{margin-top:11px;color:#9db4cc;font-size:12px;min-height:18px}
 .panel{margin-top:18px;padding:18px;border-radius:20px;background:#0f1b2b;border:1px solid var(--line)}.panel h3{margin:0 0 6px;font-size:18px}.panel .sub{color:var(--muted);font-size:13px;margin:0 0 16px;line-height:1.5}.formGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}.field label{display:block;font-size:12px;color:#b7c9dc;margin-bottom:6px}.field input,.field select{width:100%;padding:12px;border-radius:11px;border:1px solid #344b65;background:#091523;color:var(--text);outline:none}.field input:focus{border-color:var(--cyan)}.smallNote{font-size:12px;color:var(--muted);line-height:1.55;margin-top:12px}.setupNames{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:13px}.hidden{display:none!important}.empty{padding:25px;text-align:center;color:var(--muted);border:1px dashed #38506b;border-radius:18px}.footer{margin:20px 4px 0;color:#849ab2;font-size:11px;line-height:1.6;text-align:center}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);max-width:90vw;padding:12px 16px;background:#e6f8ff;color:#0b1724;border-radius:12px;font-size:13px;font-weight:700;box-shadow:0 10px 35px #0006;z-index:9}
-@media(max-width:480px){.wrap{padding:14px 12px 30px}.hero{padding:16px}.hero h2{font-size:22px}.actions .btn{flex:1}.device{padding:14px}}
+@media(max-width:480px){.wrap{padding:14px 12px 30px}.hero{padding:16px}.hero h2{font-size:22px}.actions .btn{flex:1}.device{padding:14px}.top{flex-wrap:wrap}.languageBox{margin-left:auto}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="logo-area">
-      <img class="logo" src="./icons/icon-192.png" alt="Smart Switch Board logo">
-      <div><h1 id="main-title">Smart Switch Board</h1><p id="main-subtitle">Your switches. Your setup. Your timers.</p></div>
-    </div>
-    <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">हिंदी</button>
+    <img class="logo" src="./icons/icon-192.png" alt="Smart Switch Board logo">
+    <div><h1>Smart Switch Board</h1><p data-i18n="tagline">Your switches. Your setup. Your timers.</p></div>
+    <div class="languageBox"><label for="languageSelect" data-i18n="language">Language / भाषा</label><select id="languageSelect" aria-label="Language"><option value="en">English</option><option value="hi">हिन्दी</option></select></div>
   </header>
 
   <section class="hero">
-    <div class="heroLine">
-      <div>
-        <div class="eyebrow" id="hero-eyebrow">Personal control panel</div>
-        <h2 id="hero-title">Good control starts here.</h2>
-        <p id="hero-desc">Set the number of devices for your room and manage each timer from one screen.</p>
-      </div>
-      <div class="pill"><span class="dot"></span><span id="savedLabel">Setup ready</span></div>
-    </div>
-    <div class="actions">
-      <button class="btn primary" id="editSetup">Edit setup</button>
-      <button class="btn secondary" id="allOff">Turn all off</button>
-    </div>
+    <div class="heroLine"><div><div class="eyebrow" data-i18n="eyebrow">Personal control panel</div><h2 data-i18n="heroTitle">Good control starts here.</h2><p data-i18n="heroDesc">Set the number of devices for your room and manage each timer from one screen.</p></div><div class="pill"><span class="dot"></span><span id="savedLabel">Setup ready</span></div></div>
+    <div class="actions"><button class="btn primary" id="editSetup" data-i18n="editSetup">Edit setup</button><button class="btn secondary" id="allOff" data-i18n="allOff">Turn all off</button></div>
   </section>
 
   <section id="setupPanel" class="panel hidden">
-    <h3 id="setup-title">Configure your board</h3>
-    <p class="sub" id="setup-sub">Choose how many controls you need. You can use zero for a category you do not need. Total allowed: 1–60 controls.</p>
+    <h3 data-i18n="configure">Configure your board</h3><p class="sub" data-i18n="configureDesc">Choose how many controls you need. You can use zero for a category you do not need. Total allowed: 1–60 controls.</p>
     <div class="formGrid">
-      <div class="field"><label for="lightCount" id="lbl-lights">Lights</label><input id="lightCount" type="number" min="0" max="30" value="6"></div>
-      <div class="field"><label for="fanCount" id="lbl-fans">Fans</label><input id="fanCount" type="number" min="0" max="30" value="1"></div>
-      <div class="field"><label for="socketCount" id="lbl-sockets">5-pin sockets</label><input id="socketCount" type="number" min="0" max="30" value="3"></div>
-      <div class="field"><label for="otherCount" id="lbl-others">Other devices</label><input id="otherCount" type="number" min="0" max="30" value="2"></div>
+      <div class="field"><label for="lightCount" data-i18n="lights">Lights</label><input id="lightCount" type="number" min="0" max="30" value="6"></div>
+      <div class="field"><label for="fanCount" data-i18n="fans">Fans</label><input id="fanCount" type="number" min="0" max="30" value="1"></div>
+      <div class="field"><label for="socketCount" data-i18n="sockets">5-pin sockets</label><input id="socketCount" type="number" min="0" max="30" value="3"></div>
+      <div class="field"><label for="otherCount" data-i18n="other">Other devices</label><input id="otherCount" type="number" min="0" max="30" value="2"></div>
     </div>
     <div id="nameFields" class="setupNames"></div>
-    <div class="actions">
-      <button class="btn primary" id="saveSetup">Save setup</button>
-      <button class="btn ghost" id="cancelSetup">Cancel</button>
-    </div>
-    <p class="smallNote" id="setup-note">Device names and quantities are saved on this device. This app currently demonstrates switch controls only; it does not operate real electrical wiring by itself.</p>
+    <div class="actions"><button class="btn primary" id="saveSetup" data-i18n="saveSetup">Save setup</button><button class="btn ghost" id="cancelSetup" data-i18n="cancel">Cancel</button></div>
+    <p class="smallNote" data-i18n="setupNote">Device names and quantities are saved on this device. This app currently demonstrates switch controls only; it does not operate real electrical wiring by itself.</p>
   </section>
 
-  <div class="sectionHead">
-    <div>
-      <h3 id="devices-title">Your devices</h3>
-      <p id="devices-sub">Tap a switch to change its demo state, or set an auto-off timer.</p>
-    </div>
-    <div class="count" id="deviceCount">0 devices</div>
-  </div>
+  <div class="sectionHead"><div><h3 data-i18n="yourDevices">Your devices</h3><p data-i18n="devicesDesc">Tap a switch to change its demo state, or set an auto-off timer.</p></div><div class="count" id="deviceCount">0 devices</div></div>
   <section id="deviceGrid" class="grid"></section>
   <div id="emptyState" class="empty hidden">No devices configured yet. Tap <b>Edit setup</b> to get started.</div>
 
   <section class="panel">
-    <h3 id="quick-timers-title">Quick timers</h3>
-    <p class="sub" id="quick-timers-sub">Convenient auto-off timers for common devices.</p>
-    <div class="actions">
-      <button class="btn secondary" id="quickCharger">Charger · 45 min</button>
-      <button class="btn secondary" id="quickFan">Fan · 120 min</button>
-      <button class="btn secondary" id="quickLight">Light · 120 min</button>
-    </div>
-    <p class="smallNote" id="quick-timers-note">Timers use the device clock and are restored when this page is reopened. For real appliances, a compatible controller must handle switching independently.</p>
+    <h3 data-i18n="quickTimers">Quick timers</h3><p class="sub" data-i18n="quickDesc">Convenient auto-off timers for common devices.</p>
+    <div class="actions"><button class="btn secondary" id="quickCharger">Charger · 45 min</button><button class="btn secondary" id="quickFan">Fan · 120 min</button><button class="btn secondary" id="quickLight">Light · 120 min</button></div>
+    <p class="smallNote" data-i18n="timerNote">Timers use the device clock and are restored when this page is reopened. For real appliances, a compatible controller must handle switching independently.</p>
   </section>
-  <p class="footer" id="footer-text">SMART SWITCH BOARD · MOBILE DEMO<br>Never connect mains voltage to a phone or untested circuit. Use properly rated protection and a qualified electrician for physical hardware.</p>
+  <p class="footer" data-i18n="footer">SMART SWITCH BOARD · MOBILE DEMO<br>Never connect mains voltage to a phone or untested circuit. Use properly rated protection and a qualified electrician for physical hardware.</p>
 </div>
 <div id="toast" class="toast hidden" role="status"></div>
 <script>
 "use strict";
 const CONFIG_KEY="smartBoardConfigV2";
 const RUNTIME_KEY="smartBoardRuntimeV2";
-
-// Translations dictionary
-const translations = {
-  en: {
-    pageTitle: "Smart Switch Board",
-    mainTitle: "Smart Switch Board",
-    mainSubtitle: "Your switches. Your setup. Your timers.",
-    langBtn: "हिंदी",
-    heroEyebrow: "Personal control panel",
-    heroTitle: "Good control starts here.",
-    heroDesc: "Set the number of devices for your room and manage each timer from one screen.",
-    savedLabel: "Setup ready",
-    savedOnDevice: "Saved on this device",
-    editSetup: "Edit setup",
-    allOff: "Turn all off",
-    setupTitle: "Configure your board",
-    setupSub: "Choose how many controls you need. You can use zero for a category you do not need. Total allowed: 1–60 controls.",
-    lblLights: "Lights",
-    lblFans: "Fans",
-    lblSockets: "5-pin sockets",
-    lblOthers: "Other devices",
-    saveSetup: "Save setup",
-    cancelSetup: "Cancel",
-    setupNote: "Device names and quantities are saved on this device. This app currently demonstrates switch controls only; it does not operate real electrical wiring by itself.",
-    devicesTitle: "Your devices",
-    devicesSub: "Tap a switch to change its demo state, or set an auto-off timer.",
-    emptyState: "No devices configured yet. Tap <b>Edit setup</b> to get started.",
-    quickTimersTitle: "Quick timers",
-    quickTimersSub: "Convenient auto-off timers for common devices.",
-    quickCharger: "Charger · 45 min",
-    quickFan: "Fan · 120 min",
-    quickLight: "Light · 120 min",
-    quickTimersNote: "Timers use the device clock and are restored when this page is reopened. For real appliances, a compatible controller must handle switching independently.",
-    footerText: "SMART SWITCH BOARD · MOBILE DEMO<br>Never connect mains voltage to a phone or untested circuit. Use properly rated protection and a qualified electrician for physical hardware.",
-    toastSetupSaved: "Setup saved.",
-    toastTotalDevices: "Please choose between 1 and 60 total devices.",
-    toastEnterTimer: "Enter a timer between 1 minute and 7 days.",
-    toastTimerStarted: "Timer started.",
-    toastValidMins: "Please enter a valid number of minutes.",
-    toastAllOff: "All demo switches are OFF.",
-    turnOn: "Turn ON",
-    turnOff: "Turn OFF",
-    stateOn: "ON",
-    stateOff: "OFF",
-    switchedOnManual: "Switched ON manually",
-    switchedOffManual: "Switched OFF manually",
-    switchedOff: "Switched OFF",
-    timerFinished: "Timer finished — OFF",
-    setTimer: "Set timer",
-    controlSuffix: "control",
-    catLight: "Light",
-    catFan: "Fan",
-    catSocket: "5-pin socket",
-    catOther: "Other device"
-  },
-  hi: {
-    pageTitle: "स्मार्ट स्विच बोर्ड",
-    mainTitle: "स्मार्ट स्विच बोर्ड",
-    mainSubtitle: "आपके स्विच। आपकी सेटिंग्स। आपके टाइमर।",
-    langBtn: "English",
-    heroEyebrow: "पर्सनल कंट्रोल पैनल",
-    heroTitle: "बेहतरीन नियंत्रण यहीं से शुरू होता है।",
-    hero,Desc: "अपने कमरे के लिए उपकरणों की संख्या सेट करें और एक ही स्क्रीन से प्रत्येक टाइमर को प्रबंधित करें।",
-    savedLabel: "सेटअप तैयार है",
-    savedOnDevice: "इस डिवाइस पर सहेजा गया",
-    editSetup: "सेटअप बदलें",
-    allOff: "सभी बंद करें",
-    setupTitle: "अपना बोर्ड कॉन्फ़िगर करें",
-    setupSub: "चुनें कि आपको कितने नियंत्रणों की आवश्यकता है। आप शून्य का भी उपयोग कर सकते हैं। कुल अनुमति: 1–60 नियंत्रण।",
-    lblLights: "लाइट्स",
-    lblFans: "पंखे",
-    lblSockets: "5-पिन सॉकेट",
-    lblOthers: "अन्य उपकरण",
-    saveSetup: "सेटअप सेव करें",
-    cancelSetup: "रद्द करें",
-    setupNote: "डिवाइस के नाम और मात्रा इस डिवाइस पर सहेजी जाती हैं। यह ऐप वर्तमान में केवल स्विच नियंत्रण प्रदर्शित करता है; यह अपने आप वास्तविक बिजली के तारों को संचालित नहीं करता है।",
-    devicesTitle: "आपके उपकरण",
-    devicesSub: "इसके डेमो राज्य को बदलने के लिए एक स्विच पर टैप करें, या ऑटो-ऑफ़ टाइमर सेट करें।",
-    emptyState: "अभी तक कोई डिवाइस कॉन्फ़िगर नहीं किया गया है। शुरू करने के लिए <b>सेटअप बदलें</b> पर टैप करें।",
-    quickTimersTitle: "त्वरित टाइमर",
-    quickTimersSub: "सामान्य उपकरणों के लिए सुविधाजनक ऑटो-ऑफ़ टाइमर।",
-    quickCharger: "चार्जर · 45 मिनट",
-    quickFan: "पंखा · 120 मिनट",
-    quickLight: "लाइट · 120 मिनट",
-    quickTimersNote: "टाइमर डिवाइस घड़ी का उपयोग करते हैं और पेज दोबारा खुलने पर बहाल हो जाते हैं। असली उपकरणों के लिए, एक संगत नियंत्रक को स्वतंत्र रूप से स्विचिंग संभालनी चाहिए।",
-    footerText: "स्मार्ट स्विच बोर्ड · मोबाइल डेमो<br>फोन या untested सर्किट से कभी भी मुख्य वोल्टेज न जोड़ें। भौतिक हार्डवेयर के लिए उचित सुरक्षा और योग्य इलेक्ट्रीशियन का उपयोग करें।",
-    toastSetupSaved: "सेटअप सहेज लिया गया।",
-    toastTotalDevices: "कृपया कुल 1 से 60 के बीच डिवाइस चुनें।",
-    toastEnterTimer: "1 मिनट से 7 दिन के बीच का टाइमर दर्ज करें।",
-    toastTimerStarted: "टाइमर शुरू हो गया।",
-    toastValidMins: "कृपया मिनटों की वैध संख्या दर्ज करें।",
-    toastAllOff: "सभी डेमो स्विच बंद हैं।",
-    turnOn: "चालू करें",
-    turnOff: "बंद करें",
-    stateOn: "चालू",
-    stateOff: "बंद",
-    switchedOnManual: "मैन्युअल रूप से चालू किया गया",
-    switchedOffManual: "मैन्युअल रूप से बंद किया गया",
-    switchedOff: "बंद किया गया",
-    timerFinished: "टाइमर समाप्त — बंद",
-    setTimer: "टाइमर सेट करें",
-    controlSuffix: "कंट्रोल",
-    catLight: "लाइट",
-    catFan: "पंखा",
-    catSocket: "5-पिन सॉकेट",
-    catOther: "अन्य डिवाइस"
-  }
+const LANG_KEY="smartBoardLanguage";
+const translations={
+ en:{
+ tagline:"Your switches. Your setup. Your timers.",language:"Language / भाषा",eyebrow:"Personal control panel",heroTitle:"Good control starts here.",heroDesc:"Set the number of devices for your room and manage each timer from one screen.",editSetup:"Edit setup",allOff:"Turn all off",configure:"Configure your board",configureDesc:"Choose how many controls you need. You can use zero for a category you do not need. Total allowed: 1–60 controls.",lights:"Lights",fans:"Fans",sockets:"5-pin sockets",other:"Other devices",saveSetup:"Save setup",cancel:"Cancel",setupNote:"Device names and quantities are saved on this device. This app currently demonstrates switch controls only; it does not operate real electrical wiring by itself.",yourDevices:"Your devices",devicesDesc:"Tap a switch to change its demo state, or set an auto-off timer.",quickTimers:"Quick timers",quickDesc:"Convenient auto-off timers for common devices.",timerNote:"Timers use the device clock and are restored when this page is reopened. For real appliances, a compatible controller must handle switching independently.",footer:"SMART SWITCH BOARD · MOBILE DEMO\nNever connect mains voltage to a phone or untested circuit. Use properly rated protection and a qualified electrician for physical hardware.",empty:"No devices configured yet. Tap Edit setup to get started.",setupReady:"Setup ready",saved:"Saved on this device",device:"device",devices:"devices",control:"control",on:"Turn ON",off:"Turn OFF",setTimer:"Set timer",autoOff:"Auto-off in",noTimer:"No timer set",timerFinished:"Timer finished — OFF",manualOff:"Switched OFF manually",manualOn:"Switched ON manually",allOffMsg:"Turned OFF by All Off",chooseCount:"Please choose between 1 and 60 total devices.",setupSaved:"Setup saved.",validTimer:"Enter a timer between 1 minute and 7 days.",timerStarted:"Timer started.",validMinutes:"Please enter a valid number of minutes.",timerPrompt:"Auto-off timer for",enterMinutes:"Enter minutes (e.g. 45):",noMatching:"No matching device configured.",timerStartedFor:"-minute timer started."},
+ hi:{
+ tagline:"आपके स्विच। आपकी सेटिंग। आपके टाइमर।",language:"भाषा / Language",eyebrow:"आपका कंट्रोल पैनल",heroTitle:"बेहतर कंट्रोल की शुरुआत यहाँ से।",heroDesc:"अपने कमरे के उपकरणों की संख्या चुनें और सभी टाइमर एक ही स्क्रीन से चलाएँ।",editSetup:"सेटिंग बदलें",allOff:"सभी बंद करें",configure:"अपना बोर्ड सेट करें",configureDesc:"जितने कंट्रोल चाहिए उनकी संख्या चुनें। जिस श्रेणी की जरूरत न हो उसमें 0 रखें। कुल सीमा: 1–60 कंट्रोल।",lights:"लाइट",fans:"पंखे",sockets:"5-पिन सॉकेट",other:"अन्य उपकरण",saveSetup:"सेटिंग सेव करें",cancel:"रद्द करें",setupNote:"उपकरणों के नाम और संख्या इसी फोन में सेव होते हैं। यह ऐप अभी केवल स्विच का डेमो है; यह अपने आप असली बिजली के उपकरण नहीं चलाता।",yourDevices:"आपके उपकरण",devicesDesc:"डेमो स्विच चालू/बंद करें या अपने आप बंद होने का टाइमर लगाएँ।",quickTimers:"तुरंत टाइमर",quickDesc:"आम उपकरणों के लिए जल्दी से ऑटो-ऑफ टाइमर लगाएँ।",timerNote:"टाइमर फोन की घड़ी के अनुसार चलता है और पेज दोबारा खोलने पर वापस दिखाई देता है। असली उपकरणों के लिए अलग संगत कंट्रोलर जरूरी है।",footer:"स्मार्ट स्विच बोर्ड · मोबाइल डेमो\nफोन को सीधे मेन बिजली या बिना जाँचे सर्किट से न जोड़ें। असली हार्डवेयर के लिए सही रेटिंग की सुरक्षा और योग्य इलेक्ट्रीशियन का उपयोग करें।",empty:"अभी कोई उपकरण सेट नहीं है। शुरू करने के लिए “सेटिंग बदलें” दबाएँ।",setupReady:"सेटअप तैयार",saved:"इस फोन में सेव है",device:"उपकरण",devices:"उपकरण",control:"कंट्रोल",on:"चालू करें",off:"बंद करें",setTimer:"टाइमर लगाएँ",autoOff:"बंद होने में",noTimer:"कोई टाइमर नहीं",timerFinished:"टाइमर पूरा — बंद",manualOff:"मैन्युअल रूप से बंद किया",manualOn:"मैन्युअल रूप से चालू किया",allOffMsg:"सभी डेमो स्विच बंद हैं",chooseCount:"कुल 1 से 60 उपकरण चुनें।",setupSaved:"सेटिंग सेव हो गई।",validTimer:"1 मिनट से 7 दिन के बीच टाइमर डालें।",timerStarted:"टाइमर शुरू हो गया।",validMinutes:"कृपया मिनट की सही संख्या डालें।",timerPrompt:"ऑटो-ऑफ टाइमर:",enterMinutes:"मिनट डालें (जैसे 45):",noMatching:"इस प्रकार का कोई उपकरण सेट नहीं है।",timerStartedFor:"मिनट का टाइमर शुरू हुआ।"}
 };
-
-let currentLang = localStorage.getItem('appLang') || 'hi';
-
-const categories=[
- {key:"light",labelKey:"catLight",plural:"Lights",icon:"💡",countId:"lightCount"},
- {key:"fan",labelKey:"catFan",plural:"Fans",icon:"🌀",countId:"fanCount"},
- {key:"socket",labelKey:"catSocket",plural:"Sockets",icon:"🔌",countId:"socketCount"},
- {key:"other",labelKey:"catOther",plural:"Other devices",icon:"⚡",countId:"otherCount"}
+let currentLang=localStorage.getItem(LANG_KEY)==="hi"?"hi":"en";
+function t(key){return translations[currentLang][key]||translations.en[key]||key}
+function applyLanguage(){
+ document.documentElement.lang=currentLang==="hi"?"hi":"en";
+ document.querySelectorAll("[data-i18n]").forEach(el=>{const k=el.getAttribute("data-i18n");if(translations[currentLang][k])el.textContent=translations[currentLang][k]});
+ $("languageSelect").value=currentLang;
+ $("quickCharger").textContent=currentLang==="hi"?"चार्जर · 45 मिनट":"Charger · 45 min";
+ $("quickFan").textContent=currentLang==="hi"?"पंखा · 120 मिनट":"Fan · 120 min";
+ $("quickLight").textContent=currentLang==="hi"?"लाइट · 120 मिनट":"Light · 120 min";
+ if(devices.length)renderBoard();else updateEmptyText();
+}
+function updateEmptyText(){$("emptyState").innerHTML=currentLang==="hi"?'अभी कोई उपकरण सेट नहीं है। शुरू करने के लिए <b>सेटिंग बदलें</b> दबाएँ.':'No devices configured yet. Tap <b>Edit setup</b> to get started.'}const categories=[
+ {key:"light",label:"Light",plural:"Lights",icon:"💡",countId:"lightCount"},
+ {key:"fan",label:"Fan",plural:"Fans",icon:"🌀",countId:"fanCount"},
+ {key:"socket",label:"5-pin socket",plural:"Sockets",icon:"🔌",countId:"socketCount"},
+ {key:"other",label:"Other device",plural:"Other devices",icon:"⚡",countId:"otherCount"}
 ];
 
 let devices=[], runtime={states:{},endsAt:{},messages:{}}, intervals={}, toastTimer;
 const $=id=>document.getElementById(id);
 
-function t(key){
-  return translations[currentLang][key] || translations['en'][key] || key;
+function toast(msg){
+ $("toast").textContent=msg;
+ $("toast").classList.remove("hidden");
+ clearTimeout(toastTimer);
+ toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),2500);
 }
 
-function updateStaticTexts(){
-  document.documentElement.lang = currentLang;
-  $("page-title").textContent = t("pageTitle");
-  $("main-title").textContent = t("mainTitle");
-  $("main-subtitle").textContent = t("mainSubtitle");
-  $("langToggleBtn").textContent = t("langBtn");
-  $("hero-eyebrow").textContent = t("heroEyebrow");
-  $("hero-title").textContent = t("heroTitle");
-  $("hero-desc").textContent = t("heroDesc");
-  $("savedLabel").textContent = t("savedOnDevice");
-  $("editSetup").textContent = t("editSetup");
-  $("allOff").textContent = t("allOff");
-  $("setup-title").textContent = t("setupTitle");
-  $("setup-sub").textContent = t("setupSub");
-  $("lbl-lights").textContent = t("lblLights");
-  $("lbl-fans").textContent = t("lblFans");
-  $("lbl-sockets").textContent = t("lblSockets");
-  $("lbl-others").textContent = t("lblOthers");
-  $("saveSetup").textContent = t("saveSetup");
-  $("cancelSetup").textContent = t("cancelSetup");
-  $("setup-note").textContent = t("setupNote");
-  $("devices-title").textContent = t("devicesTitle");
-  $("devices-sub").textContent = t("devicesSub");
-  $("emptyState").innerHTML = t("emptyState");
-  $("quick-timers-title").textContent = t("quickTimersTitle");
-  $("quick-timers-sub").textContent = t("quickTimersSub");
-  $("quickCharger").textContent = t("quickCharger");
-  $("quickFan").textContent = t("quickFan");
-  $("quickLight").textContent = t("quickLight");
-  $("quick-timers-note").textContent = t("quickTimersNote");
-  $("footer-text").innerHTML = t("footerText");
+function saveConfig(){
+ localStorage.setItem(CONFIG_KEY,JSON.stringify(devices));
+ localStorage.setItem("smartBoardConfig",JSON.stringify(devices));
 }
 
-function toggleLanguage(){
-  currentLang = currentLang === 'hi' ? 'en' : 'hi';
-  localStorage.setItem('appLang', currentLang);
-  updateStaticTexts();
-  renderBoard();
-  buildNameFields(devices);
+function saveRuntime(){
+ localStorage.setItem(RUNTIME_KEY,JSON.stringify(runtime));
 }
 
-function toast(msg){$("toast").textContent=msg;$("toast").classList.remove("hidden");clearTimeout(toastTimer);toastTimer=setTimeout(()=>$("toast").classList.add("hidden"),2500)}
-function saveConfig(){localStorage.setItem(CONFIG_KEY,JSON.stringify(devices));localStorage.setItem("smartBoardConfig",JSON.stringify(devices))}
-function saveRuntime(){localStorage.setItem(RUNTIME_KEY,JSON.stringify(runtime))}
-function loadRuntime(){try{runtime=JSON.parse(localStorage.getItem(RUNTIME_KEY)||"null")||{states:{},endsAt:{},messages:{}}}catch(e){runtime={states:{},endsAt:{},messages:{}}}}
-function safeCount(id){const n=Number($(id).value);return Number.isInteger(n)?Math.max(0,Math.min(30,n)):0}
+function loadRuntime(){
+ try{
+  runtime=JSON.parse(localStorage.getItem(RUNTIME_KEY)||"null")||{states:{},endsAt:{},messages:{}};
+ }catch(e){
+  runtime={states:{},endsAt:{},messages:{}};
+ }
+}
+
+function safeCount(id){
+ const n=Number($(id).value);
+ return Number.isInteger(n)?Math.max(0,Math.min(30,n)):0;
+}
 
 function buildNameFields(existing=[]){
- const box=$("nameFields");box.innerHTML="";
+ const box=$("nameFields");
+ box.innerHTML="";
+
  categories.forEach(cat=>{
   const n=safeCount(cat.countId);
-  const catLabel = t(cat.labelKey);
+
   for(let i=1;i<=n;i++){
-    const id=cat.key+"-"+i, old=existing.find(d=>d.id===id);
-    const wrap=document.createElement("div");wrap.className="field";
-    const label=document.createElement("label");label.htmlFor="name-"+id;label.textContent=catLabel+" "+i+" name";
-    const input=document.createElement("input");input.id="name-"+id;input.maxLength=40;input.value=old?.name||(`${catLabel} ${i}`);input.placeholder=`Enter ${catLabel.toLowerCase()} name`;
-    wrap.append(label,input);box.append(wrap);
+   const id=cat.key+"-"+i;
+   const old=existing.find(d=>d.id===id);
+
+   const wrap=document.createElement("div");
+   wrap.className="field";
+
+   const label=document.createElement("label");
+   label.htmlFor="name-"+id;
+
+   const hindiNames={
+    light:"लाइट",
+    fan:"पंखा",
+    socket:"5-पिन सॉकेट",
+    other:"अन्य उपकरण"
+   };
+
+   label.textContent=currentLang==="hi"
+    ?hindiNames[cat.key]+" "+i+" का नाम"
+    :cat.label+" "+i+" name";
+
+   const input=document.createElement("input");
+   input.id="name-"+id;
+   input.maxLength=40;
+   input.value=old?.name||(cat.label+" "+i);
+   input.placeholder=currentLang==="hi"?"नाम लिखें":`Enter ${cat.label.toLowerCase()} name`;
+
+   wrap.append(label,input);
+   box.append(wrap);
   }
  });
 }
 
 function openSetup(){
-  categories.forEach(c=>{const count=devices.filter(d=>d.type===c.key).length;$(c.countId).value=count;});
-  buildNameFields(devices);
-  $("setupPanel").classList.remove("hidden");
-  $("setupPanel").scrollIntoView({behavior:"smooth",block:"start"});
+ categories.forEach(c=>{
+  const count=devices.filter(d=>d.type===c.key).length;
+  $(c.countId).value=count;
+ });
+
+ buildNameFields(devices);
+ $("setupPanel").classList.remove("hidden");
+ $("setupPanel").scrollIntoView({behavior:"smooth",block:"start"});
 }
 
 function saveSetup(){
  const total=categories.reduce((s,c)=>s+safeCount(c.countId),0);
- if(total<1||total>60){toast(t("toastTotalDevices"));return}
+
+ if(total<1||total>60){
+  toast(t("chooseCount"));
+  return;
+ }
+
  const next=[];
+
  categories.forEach(cat=>{
-  const catLabel = t(cat.labelKey);
   for(let i=1;i<=safeCount(cat.countId);i++){
-    const id=cat.key+"-"+i;
-    const val=$("name-"+id)?.value.trim();
-    next.push({id,type:cat.key,name:val||`${catLabel} ${i}`,icon:cat.icon});
+   const id=cat.key+"-"+i;
+   const val=$("name-"+id)?.value.trim();
+
+   next.push({
+    id,
+    type:cat.key,
+    name:val||`${cat.label} ${i}`,
+    icon:cat.icon
+   });
   }
  });
+
  const ids=new Set(next.map(d=>d.id));
- Object.keys(intervals).forEach(id=>{if(!ids.has(id)){clearInterval(intervals[id]);delete intervals[id]}});
- devices=next;saveConfig();
+
+ Object.keys(intervals).forEach(id=>{
+  if(!ids.has(id)){
+   clearInterval(intervals[id]);
+   delete intervals[id];
+  }
+ });
+
+ devices=next;
+ saveConfig();
+
  const states={},endsAt={},messages={};
- devices.forEach(d=>{states[d.id]=!!runtime.states[d.id];endsAt[d.id]=Number(runtime.endsAt[d.id]||0);messages[d.id]=runtime.messages[d.id]||""});
- runtime={states,endsAt,messages};saveRuntime();
- $("setupPanel").classList.add("hidden");renderBoard();toast(t("toastSetupSaved"));
+
+ devices.forEach(d=>{
+  states[d.id]=!!runtime.states[d.id];
+  endsAt[d.id]=Number(runtime.endsAt[d.id]||0);
+  messages[d.id]=runtime.messages[d.id]||"";
+ });
+
+ runtime={states,endsAt,messages};
+ saveRuntime();
+
+ $("setupPanel").classList.add("hidden");
+ renderBoard();
+ toast(t("setupSaved"));
 }
 
 function renderBoard(){
- const grid=$("deviceGrid");grid.innerHTML="";
- $("deviceCount").textContent=`${devices.length} device${devices.length===1?"":"s"}`;
+ const grid=$("deviceGrid");
+ grid.innerHTML="";
+
+ $("deviceCount").textContent=
+  `${devices.length} ${currentLang==="hi"?"उपकरण":(devices.length===1?t("device"):t("devices"))}`;
+
  $("emptyState").classList.toggle("hidden",devices.length!==0);
+ updateEmptyText();
+
  devices.forEach(d=>{
-  const card=document.createElement("article");card.className="device";
-  const top=document.createElement("div");top.className="deviceTop";
-  const ico=document.createElement("div");ico.className="deviceIcon";i
+  const card=document.createElement("article");
+  card.className="device";
+
+  const top=document.createElement("div");
+  top.className="deviceTop";
+
+  const ico=document.createElement("div");
+  ico.className="deviceIcon";
+  ico.textContent=d.icon||"⚡";
+
+  const names=document.createElement("div");
+  names.style.minWidth="0";
+
+  const name=document.createElement("div");
+  name.className="deviceName";
+  name.textContent=d.name;
+
+  const type=document.createElement("div");
+  type.className="deviceType";
+
+  const hindiNames={
+   light:"लाइट",
+   fan:"पंखा",
+   socket:"5-पिन सॉकेट",
+   other:"अन्य उपकरण"
+  };
+
+  type.textContent=
+   (currentLang==="hi"
+    ?(hindiNames[d.type]||"उपकरण")
+    :(categories.find(c=>c.key===d.type)?.label||"Device")
+   )+" "+t("control");
+
+  names.append(name,type);
+
+  const state=document.createElement("div");
+  state.className="state";
+  state.id="state-"+d.id;
+
+  top.append(ico,names,state);
+
+  const bottom=document.createElement("div");
+  bottom.className="deviceBottom";
+
+  const toggle=document.createElement("button");
+  toggle.className="toggle";
+  toggle.id="toggle-"+d.id;
+  toggle.onclick=()=>toggleDevice(d.id);
+
+  const timer=document.createElement("button");
+  timer.className="timerBtn";
+  timer.textContent=t("setTimer");
+  timer.onclick=()=>setTimerPrompt(d.id);
+
+  bottom.append(toggle,timer);
+
+  const timerText=document.createElement("div");
+  timerText.className="timerText";
+  timerText.id="timer-"+d.id;
+
+  card.append(top,bottom,timerText);
+  grid.append(card);
+
+  updateDevice(d.id);
+ });
+
+ devices.forEach(d=>{
+  const end=Number(runtime.endsAt[d.id]||0);
+
+  if(end>0){
+   if(end<=Date.now()){
+    switchOff(d.id,t("timerFinished"));
+   }else{
+    runtime.states[d.id]=true;
+    startInterval(d.id);
+   }
+  }
+ });
+
+ saveRuntime();
+ $("savedLabel").textContent=t("saved");
+}function updateDevice(id){
+ const on=
